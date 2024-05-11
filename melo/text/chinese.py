@@ -1,3 +1,4 @@
+import jieba.posseg as psg
 import os
 import re
 
@@ -12,8 +13,6 @@ pinyin_to_symbol_map = {
     line.split("\t")[0]: line.strip().split("\t")[1]
     for line in open(os.path.join(current_file_path, "opencpop-strict.txt")).readlines()
 }
-
-import jieba.posseg as psg
 
 
 rep_map = {
@@ -70,7 +69,8 @@ def g2p(text):
     sentences = [i for i in re.split(pattern, text) if i.strip() != ""]
     phones, tones, word2ph = _g2p(sentences)
     assert sum(word2ph) == len(phones)
-    assert len(word2ph) == len(text)  # Sometimes it will crash,you can add a try-catch.
+    # Sometimes it will crash,you can add a try-catch.
+    assert len(word2ph) == len(text)
     phones = ["_"] + phones + ["_"]
     tones = [0] + tones + [0]
     word2ph = [1] + word2ph + [1]
@@ -80,7 +80,8 @@ def g2p(text):
 def _get_initials_finals(word):
     initials = []
     finals = []
-    orig_initials = lazy_pinyin(word, neutral_tone_with_five=True, style=Style.INITIALS)
+    orig_initials = lazy_pinyin(
+        word, neutral_tone_with_five=True, style=Style.INITIALS)
     orig_finals = lazy_pinyin(
         word, neutral_tone_with_five=True, style=Style.FINALS_TONE3
     )
@@ -103,7 +104,8 @@ def _g2p(segments):
         seg_cut = tone_modifier.pre_merge_for_modify(seg_cut)
         for word, pos in seg_cut:
             if pos == "eng":
-                import pdb; pdb.set_trace()
+                import pdb
+                pdb.set_trace()
                 continue
             sub_initials, sub_finals = _get_initials_finals(word)
             sub_finals = tone_modifier.modified_tone(word, pos, sub_finals)
@@ -119,7 +121,7 @@ def _g2p(segments):
             # NOTE: post process for pypinyin outputs
             # we discriminate i, ii and iii
             if c == v:
-                assert c in punctuation
+                assert c in punctuation, f"c == v, but c {c} is not in punctuation {punctuation}"
                 phone = [c]
                 tone = "0"
                 word2ph.append(1)

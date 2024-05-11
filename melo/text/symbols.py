@@ -1,5 +1,5 @@
 # punctuation = ["!", "?", "…", ",", ".", "'", "-"]
-punctuation = ["!", "?", "…", ",", ".", "'", "-", "¿", "¡"]
+punctuation = ["!", "?", "…", ",", ".", "'", "-", "¿", "¡", "_"]
 pu_symbols = punctuation + ["SP", "UNK"]
 pad = "_"
 
